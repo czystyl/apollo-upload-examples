@@ -11,16 +11,12 @@ const UploadFile = ({ mutate }) => {
   }) =>
     validity.valid &&
     mutate({
-      variables: { file },
-      update(
-        proxy,
-        {
-          data: { singleUpload }
-        }
-      ) {
-        const data = proxy.readQuery({ query: uploadsQuery })
-        data.uploads.push(singleUpload)
-        proxy.writeQuery({ query: uploadsQuery, data })
+      variables: { file, data: { reason: 'elo' } },
+      update(proxy, { data }) {
+        console.log({ data })
+        // const data = proxy.readQuery({ query: uploadsQuery })
+        // data.uploads.push(singleUpload)
+        // proxy.writeQuery({ query: uploadsQuery, data })
       }
     })
 
@@ -28,12 +24,9 @@ const UploadFile = ({ mutate }) => {
 }
 
 export default graphql(gql`
-  mutation($file: Upload!) {
-    singleUpload(file: $file) {
+  mutation($file: Upload!, $data: DeviationCreateInput!) {
+    createDeviation(file: $file, data: $data) {
       id
-      filename
-      mimetype
-      path
     }
   }
 `)(UploadFile)
